@@ -1,0 +1,103 @@
+
+{
+    "details" : "details fetched",
+    "unauthorised" : "You are unauthorized",
+    "unauthorized" : "You are unauthorized",
+    "req-accepted" : "request accepted",
+    "request deleted" : "request deleted",
+
+    "bad-request" : "Bad Request",
+    "blocked" : "You have been blocked! Please contact with admin",
+    "conflict-feedback" : "you can't give review of your own business",
+    "name-conflict" : "Already have a plan by this name, try with another name",
+    "password-required" : "password required",
+    "user-password-not-set" : "user password not set",
+    "password-not-match" : "password not match",
+
+
+    "login-success" : "login success",
+    "invalid-token" : "invalid token",
+    "invalid-password" : "invalid password",
+    "password-changed" : "your password has been updated",
+    "password-invalid" : "invalid password ", 
+    "invalid-otp" : "invalid otp",
+    "otp-verified" : "otp verified",
+    "resend-otp": "otp sent again to your email",
+    "otp-sent" : "otp send to your email",
+    "user-verified" : "email user verified",
+    "forgot-password" : "otp sent for forget password",
+    "user-not-exists" : "user not exist",
+    "user-updated" : "user data updated",
+    "users-list" : "user list fetched",
+    "user-banned" : "user banned",
+    "user-unbanned" : "user unbanned",
+    "dealers-req" : "all dealer request fetched",
+    "employee-list" : "employee list fetched",
+    "user-ratio": "ratio data fetched",
+    "password-reset-success" : "your password has been reset successfully",
+    "account-switched" : "account switched successfully",
+    "delete-account" : "Account Deleted successfully",
+
+    
+    "business-added" : "new business added",
+    "business-deleted" : "business account deleted",
+    "nearby-business" : "Nearby business fetched successfully",
+    "all-business" : "all-business fetched",
+
+    "community-added" : "community data added successfully",
+    "community-list" : "community list fetched",
+
+    "deal-added" : "new deal added successfully",
+    "deal-edited" : "deal updated successfully",
+    "deals-to-approve" : "all deals to approve",
+    "deal approved" : "deal approved",
+    "all-changed-deals" : "all changed deals",
+    "admin-deal-management" : "admin deal management",
+    "my-all-bookings" : "My all bookings",
+    "popular-deals" : "most popular deals",
+    "redeemtion-trend" : "redeemtion trend",
+    "deal-edit-req" : "deal edit req send",
+    "deal-delete-req" : "deal delete req send",
+    "deal-redeemed" : "deal redeemed",
+    "deal-deleted" : "deal deleted successfully",
+
+
+    "favourite-added" : "favourite added",
+    "unfavourited" : "unfavourited",
+    "my-favourite" : "my favourit list",
+
+    "feedback-added" : "feedback added successfully",
+    "feedbacks" : "My all feedbacks",
+    "all-feedback": "feedback fetched successfully",
+
+    "home-page-data" : "home page data fetched",
+
+    "menu-added" : "new menu added successfully",
+    "menus" : "menu fetched",
+    "menu-updated" : "'menu updated",
+    "menu-deleted" : "menu deleted",
+
+
+    "potentialDealer-added" : "potential dealer added",
+    "potentialDeal-updated" : "potentialDeal data updated",
+    "potentialDeals" : "all potential Dealer fetched",
+
+    "city-added" : "new city added",
+    "city-updated" : "city updated",
+    "cities" : "all cities",
+
+
+    "staticContent-added" : "static content added",
+    "staticContents" : "staticContents",
+
+    "make-dealer" : "this user will act as a dealer also",
+
+    "unexpected-error" : "An unexpected error occurred",
+
+    
+    "role-assigned-title": "You've been assigned a new role: {{role}}",
+    "role-assigned-message": "Congratulations! You have been assigned the role of {{role}}.",
+    "new-role-joined-title": "A new {{role}} Joined",
+    "new-role-joined-message": "A new {{role}} Joined"
+
+}
