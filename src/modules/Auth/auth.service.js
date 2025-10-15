@@ -1,7 +1,7 @@
 
 const ApiError = require('../../helpers/ApiError');
 const { admiNotificationCount } = require('../../helpers/notificationCount');
-const { adminNotificationHandler } = require('../../socket/features/socketNotification');
+const { adminNotificationHandler, EmiteNotificationHandler } = require('../../socket/features/socketNotification');
 const { addNotificationService } = require('../Notification/notification.service');
 const User = require('../User/user.model');
 const bcrypt = require('bcryptjs');
@@ -9,24 +9,87 @@ const { default: status } = require('http-status');
 
 
 const addUser = async (userBody) => {
-  await addNotificationService({
-    forAdmin: true,
-    message: `New user added!`
-  });
-  let count = await admiNotificationCount();
-  await adminNotificationHandler({
-    title: `New user added!`,
-    // target: 'admin',
-    unreadCount: count
-  })
-  return User.create(userBody);
+  const existingUser = await getUserByEmail(userBody.email);
+  if (existingUser && !existingUser.role.includes(userBody.role) && !existingUser.role.includes(null) && !existingUser.role.includes('null')) {
+    existingUser.role.push(userBody.role);
+    const roleTranslations = {
+      admin: { en: "Admin", de: "Administrator" },
+      contractor: { en: "contractor", de: "contractor" },
+      provider: { en: "provider", de: "provider" }
+    };
+    const translatedRole = roleTranslations[userBody.role];
+    await addNotificationService({
+      title: {
+        en: `Congratulations! You have been assigned the role of ${translatedRole.en}.`,
+        de: `Glückwunsch! Sie wurden der Rolle ${translatedRole.de} zugewiesen.`
+      },
+      message: {
+        en: `Congratulations! You have been assigned the role of ${translatedRole.en}.`,
+        de: `Glückwunsch! Sie wurden der Rolle ${translatedRole.de} zugewiesen.`
+      },
+      targetUser: existingUser._id,
+      target: 'user'
+    });
+
+
+    await EmiteNotificationHandler({
+      title: `You've been assigned a new role: ${userBody.role}`,
+      image: existingUser.image,
+      message: `Congratulations! You have been assigned the role of ${userBody.role}.`,
+      target: 'user',
+    });
+
+    return await existingUser.save();
+  } else {
+    const user = new User(userBody);
+    user.userName = userBody.fullName.split("*")[0];
+    user.currentRole = userBody.role;
+    const roleTranslations = {
+      admin: { en: "Admin", de: "Administrator" },
+      contractor: { en: "contractor", de: "contractor" },
+      provider: { en: "provider", de: "provider" }
+    };
+
+    const translatedRole = roleTranslations[userBody.role] || {
+      en: userBody.role,
+      de: userBody.role,
+    };
+
+    !userBody.role === "admin" && await addNotificationService({
+      title: {
+        en: `A new ${translatedRole.en} joined`,
+        de: `Ein neuer ${translatedRole.de} ist beigetreten`
+      },
+      message: {
+        en: `A new ${translatedRole.en} joined`,
+        de: `Ein neuer ${translatedRole.de} ist beigetreten`
+      },
+      targetUser: user._id,
+      target: 'admin'
+    });
+
+
+    !userBody.role === "admin" && await adminNotificationHandler({
+      title: `A new ${userBody.role} Joined`,
+      image: user.image,
+      message: `A new ${userBody.role} Joined`,
+      target: 'admin',
+    })
+
+    return await user.save();
+  }
 }
 
-const login = async (email, inputPassword) => {
+
+
+const login = async (role , email, inputPassword) => {
   const user = await User.findOne({ email }).select('+password');
   if (!user) throw new ApiError(status.NOT_FOUND, 'invalid-email');
   if (user && user.isBan === true) throw new ApiError(status.NOT_FOUND, 'blocked');
   const isMatch = await bcrypt.compare(inputPassword, user.password);
+  if (!user.role?.includes(role)) {
+    throw new ApiError(status.UNAUTHORIZED, 'invalid-role');
+  }
   if (!isMatch) throw new ApiError(status.UNAUTHORIZED, 'invalid-password');
   return user;
 };
@@ -34,7 +97,6 @@ const login = async (email, inputPassword) => {
 
 
 const getUserByEmail = async (email) => {
-  console.log({ email })
   return await User.findOne({ email });
 }
 

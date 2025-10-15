@@ -31,14 +31,14 @@ async function myServer() {
     await seedAdmin();
     server = app.listen(port, () => {
       console.dir(
-        `---> 🏃🏃  ${appName} server is running at: http://${serverIP}:${port}`
+        `---> ${appName} server is running at: http://${serverIP}:${port}`
       );
     });
 
     //start socket server
     socketServer.listen(socketPort, () => {
       console.dir(
-        `---> 🌐🏃  ${appName} Socket server is listening on: http://${serverIP}:${socketPort}`
+        `---> 🌐  ${appName} Socket server is listening on: http://${serverIP}:${socketPort}`
       );
     });
 

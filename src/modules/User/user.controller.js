@@ -81,7 +81,6 @@ const updateProfile = catchAsync(async (req, res) => {
       req.body.image = `/uploads/users/${filename}`;
     }
   }
-  console.log(req.body)
   const updatedUser = await updateUserById(user._id, req.body);
   return res.status(status.OK).json(response({
     status: 'OK',
@@ -100,8 +99,6 @@ const allUsers = catchAsync(async (req, res) => {
     page: Number(req.query.page) || 1,
     limit: Number(req.query.limit) || 10
   };
-
-  const role = req.query.role;
 
   const search = req.query.search;
   if (search && search !== 'null' && search !== '' && search !== undefined) {
@@ -133,28 +130,16 @@ const userRatio = catchAsync(async (req, res) => {
 });
 
 
-
 const banUserController = catchAsync(async (req, res) => {
   const user = await banUserService(req.params.userId, { isBan: true });
   return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'user', message: req.t('user-banned'), data: user }));
 })
 
 
-
-const unbanUserController = catchAsync(async (req, res) => {
-  const user = await unbanUserService(req.params.userId, { isBan: false });
-  return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'user', message: req.t('user-unbanned'), data: user }));
-})
-
 const completeProfileController = catchAsync(async (req, res) => {
   req.body.isComplete = true;
   const user = await updateUserById(req.User._id, req.body);
   return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'user', message: 'complete Profile', data: user }));
-})
-
-const changeCurrentTrainning = catchAsync(async (req, res) => {
-  const user = await changeCurrentTrainningService(req.User._id, req.body.currentTrainning);
-  return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'user', message: 'Change Current Trainning', data: user }));
 })
 
 
@@ -173,9 +158,7 @@ module.exports = {
   userRatio,
   Count,
   userDetailsByID,
-  unbanUserController,
   banUserController,
   completeProfileController,
-  changeCurrentTrainning,
   seeOwnReferalCode
 };

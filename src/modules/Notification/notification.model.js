@@ -1,12 +1,21 @@
 const mongoose = require("mongoose");
 
+const localizedStringSchema = new mongoose.Schema({
+  en: { type: String, required: false },
+  de: { type: String, required: false }
+}, { _id: false });
 
 const notificationSchema = new mongoose.Schema({
-  targetUser: {type: mongoose.Types.ObjectId, ref:'User', required: false},
-  postId: {type: mongoose.Types.ObjectId, ref:'Post', required: false},
-  message: { type: String, required: false },
+  link: { type: String, required: false },
+  targetUser: { type: mongoose.Types.ObjectId, ref: 'User', required: false },
+  target: {
+    type: String,
+    enum: ['user-business', 'business-admin', 'user', 'business', 'admin']
+  },
+  title: { type: localizedStringSchema, required: false },
+  message: { type: localizedStringSchema, required: true },
+  postalCode: { type: String, required: false },
   isRead: { type: Boolean, default: false },
-  forAdmin: { type: Boolean, default: false },
 }, { timestamps: true });
 
 

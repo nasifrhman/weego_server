@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 
 
 const userSchema = new mongoose.Schema({
-  displayName: { type: String, required: false },
-  userName: { type: String, required: false, trim: true },
+  fullName: { type: String, required: false },
+  userName: { type: String, required: false, trim: true, unique: true },
   email: { type: String, required: false, trim: true },
   phoneNumber: { type: String, required: false, trim: true },
   dob: { type: Date, required: false },
@@ -14,8 +14,8 @@ const userSchema = new mongoose.Schema({
   contact2: { type: String, required: false },
   image: { type: String, required: false, default: '/uploads/users/user.jpg' },
   verificationImage: { type: String, required: false, default: '/uploads/users/user.jpg' }, //verificationImage
-  role: { type: String, enum: ['contractor', 'provider', 'admin'], default: 'contractor' },
-  currentRole: { type: String, enum: ['contractor', 'provider'], default: 'contractor' },
+  role: [{ type: String, enum: ['contractor', 'provider', 'admin'], default: 'contractor' }],
+  currentRole: { type: String, enum: ['contractor', 'provider', 'admin'], default: 'contractor' },
   isBan: { type: Boolean, default: false },
   isVerified: { type: Boolean, default: false },
   rating: { type: Boolean, default: false },
@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema({
   }
 );
 
-
+userSchema.index({ email: 1 }, {unique: true}); 
+userSchema.index({ role: 1 });
  
 module.exports = mongoose.model('User', userSchema);

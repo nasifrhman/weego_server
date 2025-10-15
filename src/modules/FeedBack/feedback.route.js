@@ -3,7 +3,7 @@ const { addFeedbackController, getFeedbackController } = require("./feedback.con
 const { auth } = require("../../middlewares/auth");
 const router = express.Router();
 
-router.post("/add",  auth(['user']), addFeedbackController);
+router.post("/add", auth(['provider', 'contractor']), addFeedbackController);
 router.get('/all', auth(['admin']), getFeedbackController)
 
 module.exports = router;

@@ -10,6 +10,7 @@
     "conflict-feedback": "Sie können keine Bewertung für Ihr eigenes Unternehmen abgeben",
     "name-conflict": "Es gibt bereits einen Plan mit diesem Namen, versuchen Sie es mit einem anderen Namen",
     "password-required": "Passwort erforderlich",
+    "invalid-role": "Ungültige Rolle",
     "user-password-not-set": "Benutzerpasswort nicht festgelegt",
     "password-not-match": "Passwort stimmt nicht überein",
 
@@ -22,6 +23,7 @@
     "otp-verified": "OTP verifiziert",
     "resend-otp": "OTP wurde erneut an Ihre E-Mail gesendet",
     "otp-sent": "OTP wurde an Ihre E-Mail gesendet",
+    "otp-exists": "OTP wurde bereits an Ihre E-Mail gesendet, bitte überprüfen Sie Ihre E-Mail",
     "user-verified": "Benutzer per E-Mail verifiziert",
     "forgot-password": "OTP für Passwort vergessen gesendet",
     "user-not-exists": "Benutzer existiert nicht",

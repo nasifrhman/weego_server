@@ -1,12 +1,12 @@
 const express = require("express");
-const { readNotification, userNotification, adminNotification, readAdminEndNotification, unreadCountAdminNotification } = require("./notification.controller");
+const { addNotification, readNotification, userNotification, businessNotification, adminNotification } = require("./notification.controller");
 const { auth } = require("../../middlewares/auth");
 const router = express.Router();
 
-router.get("/notification-userend",  auth(['user']), userNotification);
-router.get("/unread-count",  auth(['admin']), unreadCountAdminNotification);
-router.get("/notification-adminend", auth(['admin']), adminNotification);
-router.patch("/read-admin", auth(['admin']), readAdminEndNotification);
-router.put("/read/:id", auth(['user', 'admin']), readNotification);
+router.post("/",  auth(['admin']), addNotification);
+router.get("/notification-userend",  auth(['user', 'business', 'admin']), userNotification);
+router.get("/notification-businessend",  auth(['user', 'business', 'admin']), businessNotification);
+router.get("/notification-adminend",  auth(['admin']), adminNotification);
+router.put("/read/:id",  auth(['user', 'business', 'admin']), readNotification);
 
 module.exports = router;

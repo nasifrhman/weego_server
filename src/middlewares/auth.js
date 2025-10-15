@@ -7,7 +7,6 @@ const ApiError = require('../helpers/ApiError');
 
 const auth = (userRoles) => {
   return catchAsync(async (req, res, next) => {
-    // console.log({ userRoles })
     const { authorization } = req.headers;
     let token, decodedData;
     if (authorization && authorization.startsWith("Bearer")) {
@@ -19,7 +18,7 @@ const auth = (userRoles) => {
     if (!authorization || !decodedData) throw new ApiError(status.UNAUTHORIZED, 'Unauthorized');
     const user = await getUserById(decodedData._id);
     if (!user) throw new ApiError(status.NOT_FOUND, 'Unauthorized User')
-    if (userRoles && !userRoles.includes(decodedData.role)) {
+    if (userRoles && !userRoles.includes(decodedData.currentRole)) {
       throw new ApiError(status.UNAUTHORIZED, 'You are not authorized');
     }
     req.User = decodedData;
@@ -36,11 +35,11 @@ const tokenCheck = catchAsync(async (req, res, next) => {
     if (token && token !== undefined && token !== null && token !== "null") {
       decodedData = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
     }
+    console.log({ decodedData });
     req.User = decodedData;
   }
   next();
-}
-);
+});
 
 
 
