@@ -4,6 +4,6 @@ const router = express.Router();
 const { auth } = require('../../middlewares/auth');
 
 router.post('/', auth(['admin']), upgradeStaticContent);
-router.get('/', auth(['provider', 'contractor', 'admin']), getAllStaticContent);
+router.get('/', auth(['user', 'business', 'admin']), getAllStaticContent);
 
 module.exports = router;

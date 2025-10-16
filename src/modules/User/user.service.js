@@ -1,13 +1,13 @@
-const { default: status } = require('http-status');
-const ApiError = require('../../helpers/ApiError');
 const User = require('./user.model');
 const { default: mongoose } = require('mongoose');
 const mysubscriptionModel = require('../MySubscription/mysubscription.model');
+const deleteAccountModel = require('../DeleteAccount/deleteAccount.model');
+const ApiError = require('../../helpers/ApiError');
 
 
 
 const getUserById = async (id) => {
-  return await User.findById(id).select('-password');
+  return await User.findById(id);
 }
 
 const getUserfieldById = async (id) => {
@@ -30,12 +30,13 @@ const getUserProfile = async (id) => {
         phoneNumber: 1,
         email: 1,
         image: 1,
-        points: 1,
-        goal: 1,
-        skillLevel: 1,
-        ageGroup: 1,
-        userType: 1,
-        yourRefaralCode: 1
+        bio: 1,
+        contact1: 1,
+        contact2: 1,
+        dob: 1,
+        role: 1,
+        gender: 1,
+        language: 1,
       }
     }
   ]);
@@ -66,7 +67,7 @@ const getCurrentTrainning = async (id) => {
     {
       $project: {
         _id: 0,
-        currentTrainning: "$currentTrainningDetails.name" 
+        currentTrainning: "$currentTrainningDetails.name"
       }
     }
   ]);
@@ -75,8 +76,31 @@ const getCurrentTrainning = async (id) => {
 
 
 
-const deleteAccountService = async (id) => {
-  return await User.findByIdAndDelete(id)
+const deleteAccountService = async (data) => {
+  const user = await User.findOneAndUpdate(
+    { _id: data.user },
+    { $pull: { role: data.currentRole } },
+    { new: true }
+  );
+  if (user) {
+    if (user.role.length > 0 && user.currentRole === data.currentRole) {
+      user.currentRole = user.role[0];
+      await user.save();
+    } else if (user.role.length === 0) {
+      user.email = `${user.email}_deleted_${Date.now()}`;
+      user.userName = `${user.userName}_deleted_${Date.now()}`;
+      user.isDeleted = true;
+      user.isBan = true;
+      await user.save();
+    }
+
+    user && await deleteAccountModel.create({
+      user: data.user,
+      youliveIn: data.youLiveIn || '',
+      reason: data.deleteReason || ''
+    });
+    return user;
+  }
 }
 
 
@@ -142,33 +166,23 @@ const unbanUserService = async (id, data) => {
 
 
 const updateUserById = async (id, data) => {
-  if (data.sports) data.currentTrainning = data.sports;
-  return await User.findByIdAndUpdate(id, data, { new: true });
-}
-
-
-const changeCurrentTrainningService = async (id, currentTrainning) => {
-  const user = await getUserById(id);
-  console.log({user})
-  if(user.planName === '' || !user.planName){
-    throw new ApiError(status.BAD_REQUEST, "please subscribe to a plan to change your current trainning")
-  }
-  else if (user.planName === 'Sport Pro') {
-    const sportLength = user.sports.length;
-    if (user.sports.includes(currentTrainning)){
-      user.currentTrainning = currentTrainning;
-      user.save()
-      return user;
+  const user = await User.findById(id);
+  if (!user) throw new ApiError(404, 'User not found');
+  if (data.language) {
+    // if (!Array.isArray(data.language)) {
+    //   data.language = [data.language];
+    // }
+    if (!user.language.includes(data.language)) {
+      user.language.push(data.language);
     }
-    if (sportLength > 2) throw new ApiError(status.BAD_REQUEST, "your reached your limit. please switch in Elite for more")
   }
-  if (!user.sports.includes(currentTrainning)) {
-    user.sports.push(currentTrainning);
-    user.currentTrainning = currentTrainning;
-    user.save()
-  }
+  // Remove language from data so findByIdAndUpdate doesn't overwrite it
+  const { language, ...otherData } = data;
+  Object.assign(user, otherData);
+  await user.save();
   return user;
-}
+};
+
 
 
 
@@ -180,11 +194,32 @@ const getUsers = async (filter, options) => {
         fullName: 1,
         email: 1,
         image: 1,
-        planName: 1,
-        userType: 1,
-        planName: 1,
-        userType: 1,
         createdAt: 1,
+        isBan: 1,
+      }
+    },
+    { $sort: { createdAt: -1 } },
+    { $skip: (options.page - 1) * options.limit },
+    { $limit: options.limit },
+  ]);
+
+  const totalResults = await User.countDocuments(filter);
+  const totalPages = Math.ceil(totalResults / options.limit);
+  const pagination = { totalResults, totalPages, currentPage: options.page, limit: options.limit };
+
+  return { users, pagination };
+};
+
+
+const getDeletedUsers = async (filter, options) => {
+  const users = await User.aggregate([
+    { $match: filter },
+    {
+      $project: {
+        fullName: 1,
+        email: 1,
+        image: 1,
+        updatedAt: 1,
         isBan: 1,
       }
     },
@@ -254,10 +289,10 @@ module.exports = {
   getUserByEmail,
   deleteAccountService,
   getUsers,
+  getDeletedUsers,
   getMonthlyUserRatio,
   getUserByfilter,
   calculateCountUserService,
-  changeCurrentTrainningService,
   getCurrentTrainning,
   calculateSubscriptionCount
 }

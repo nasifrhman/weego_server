@@ -7,11 +7,11 @@ const { tokenCheck, auth } = require("../../middlewares/auth");
 
 router.post("/signin", localAuth);
 router.post("/sign-up", signUp);
-router.post("/resend-otp", resendOTP);
 router.post("/email-verification", tokenCheck, emailVerification);
-router.post("/resend-otp", tokenCheck, emailVerificationForresendOtp);
+router.post("/email-verification-resend-otp", tokenCheck, emailVerificationForresendOtp);
 router.post("/forget-password", forgetPassword);
 router.post("/verify-otp", tokenCheck, verifyForgetPasswordOTP);
+router.post("/resend-otp", resendOTP);
 router.post("/verify-resendotp", tokenCheck, resendOtpForForgetPassword);
 router.post("/reset-password", resetPassword);
 router.patch("/change-password", auth(['provider', 'contractor', 'admin']), changePassword);

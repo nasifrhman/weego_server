@@ -6,6 +6,7 @@ const { addNotificationService } = require('../Notification/notification.service
 const User = require('../User/user.model');
 const bcrypt = require('bcryptjs');
 const { default: status } = require('http-status');
+const privacyModel = require('../Privacy/privacy.model');
 
 
 const addUser = async (userBody) => {
@@ -21,11 +22,11 @@ const addUser = async (userBody) => {
     await addNotificationService({
       title: {
         en: `Congratulations! You have been assigned the role of ${translatedRole.en}.`,
-        de: `Glückwunsch! Sie wurden der Rolle ${translatedRole.de} zugewiesen.`
+        es: `Glückwunsch! Sie wurden der Rolle ${translatedRole.de} zugewiesen.`
       },
       message: {
         en: `Congratulations! You have been assigned the role of ${translatedRole.en}.`,
-        de: `Glückwunsch! Sie wurden der Rolle ${translatedRole.de} zugewiesen.`
+        es: `Glückwunsch! Sie wurden der Rolle ${translatedRole.de} zugewiesen.`
       },
       targetUser: existingUser._id,
       target: 'user'
@@ -38,7 +39,6 @@ const addUser = async (userBody) => {
       message: `Congratulations! You have been assigned the role of ${userBody.role}.`,
       target: 'user',
     });
-
     return await existingUser.save();
   } else {
     const user = new User(userBody);
@@ -52,17 +52,17 @@ const addUser = async (userBody) => {
 
     const translatedRole = roleTranslations[userBody.role] || {
       en: userBody.role,
-      de: userBody.role,
+      es: userBody.role,
     };
 
     !userBody.role === "admin" && await addNotificationService({
       title: {
         en: `A new ${translatedRole.en} joined`,
-        de: `Ein neuer ${translatedRole.de} ist beigetreten`
+        es: `Ein neuer ${translatedRole.de} ist beigetreten`
       },
       message: {
         en: `A new ${translatedRole.en} joined`,
-        de: `Ein neuer ${translatedRole.de} ist beigetreten`
+        es: `Ein neuer ${translatedRole.de} ist beigetreten`
       },
       targetUser: user._id,
       target: 'admin'
@@ -75,7 +75,7 @@ const addUser = async (userBody) => {
       message: `A new ${userBody.role} Joined`,
       target: 'admin',
     })
-
+    await privacyModel.create({ user: user._id });
     return await user.save();
   }
 }

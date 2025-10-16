@@ -71,7 +71,7 @@ const emailVerificationForresendOtp = catchAsync(async (req, res) => {
 const forgetPassword = catchAsync(async (req, res) => {
   const { email } = req.body;
   const user = await getUserByEmail(email);
-  if (!user) return res.status(status.NOT_FOUND).json(response({ status: "Error", statusCode: "status.NOT_FOUND", type: "user", message: req.t("user-not-exists") }));
+  if (!user) return res.status(status.NOT_FOUND).json(response({ status: "Error", statusCode: status.NOT_FOUND, type: "user", message: req.t("user-not-exists") }));
   const otpData = await sendOTP(user.fullName, email, "email", "forget-password");
   const payload = {
     _id: user._id,
@@ -93,7 +93,7 @@ const verifyForgetPasswordOTP = catchAsync(async (req, res) => {
   const user = await getUserByEmail(email);
   console.log({user})
   if (!user) {
-    return res.status(status.NOT_FOUND).json(response({ status: "Error", statusCode: "status.NOT_FOUND", type: "user", message: req.t("user-not-exists") }));
+    return res.status(status.NOT_FOUND).json(response({ status: "Error", statusCode: status.NOT_FOUND, type: "user", message: req.t("user-not-exists") }));
   }
   const otpVerified = await verifyOTP(email, "email", "forget-password", otp);
   if (!otpVerified) {
@@ -110,7 +110,7 @@ const resendOtpForForgetPassword = catchAsync(async (req, res) => {
   const email = req.User.email;
   const user = await getUserByEmail(email);
   if (!user) {
-    return res.status(status.NOT_FOUND).json(response({ status: "Error", statusCode: "status.NOT_FOUND", type: "user", message: req.t("user-not-exists") }));
+    return res.status(status.NOT_FOUND).json(response({ status: "Error", statusCode: status.NOT_FOUND, type: "user", message: req.t("user-not-exists") }));
   }
   const otpVerified = await verifyOTP(email, "email", "resend-otp", otp);
   if (!otpVerified) {

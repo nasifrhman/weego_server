@@ -1,5 +1,6 @@
 const User = require("../modules/User/user.model");
 const adminModel = require("../modules/Admin/admin.model");
+const privacyModel = require("../modules/Privacy/privacy.model");
 
 const adminEmail = process.env.ADMIN_EMAIL;
 const adminPassword = process.env.ADMIN_PASSWORD;
@@ -17,6 +18,7 @@ const seedAdmin = async () => {
         currentRole: 'admin',
         isAdmin: true
       });
+      await privacyModel.create({ user: newborn._id });
       await adminModel.create({
         user: newborn._id,
         adminRole: "owner",

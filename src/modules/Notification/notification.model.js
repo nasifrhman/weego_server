@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const localizedStringSchema = new mongoose.Schema({
   en: { type: String, required: false },
-  de: { type: String, required: false }
+  es: { type: String, required: false }
 }, { _id: false });
 
 const notificationSchema = new mongoose.Schema({

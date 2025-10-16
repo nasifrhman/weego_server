@@ -5,9 +5,6 @@ const { status } = require("http-status");
 
 
 const upgradeStaticContent = catchAsync(async (req, res) => {
-  // if (req.User.role !== 'admin') {
-  //   return res.status(status.BAD_REQUEST).json(response({ status: 'Error', statusCode: status.BAD_REQUEST, type: 'staticContent', message: 'unauthorised' }));
-  // }
   const staticContent = await addStaticContent(req.body);
   return res.status(status.CREATED).json(response({ status: 'Success', statusCode: status.CREATED, type: 'staticContent', message: req.t('staticContent-added'), data: staticContent }));
 })

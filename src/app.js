@@ -15,7 +15,7 @@ const middleware = require('i18next-http-middleware');
 
 // Initialize i18next for localization
 i18next.use(Backend).use(middleware.LanguageDetector).init({
-  fallbackLng: ["en", "dn"],
+  fallbackLng: ["en", "es"],
   backend: {
     loadPath: './locales/{{lng}}/translation.json'
   }

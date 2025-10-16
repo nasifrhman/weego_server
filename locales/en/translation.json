@@ -15,6 +15,7 @@
     "user-password-not-set" : "user password not set",
     "password-not-match" : "password not match",
 
+    "privacy-policy-updated" : "privacy policy updated",
 
     "login-success" : "login success",
     "invalid-token" : "invalid token",

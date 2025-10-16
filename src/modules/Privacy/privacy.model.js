@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const folderSchema = new Schema({
+const privacySchema = new Schema({
     readReceipts: { type: Boolean, default: true },
     ads: { type: Boolean, default: true },
     showName: { type: Boolean, default: true },
@@ -13,4 +13,4 @@ const folderSchema = new Schema({
 });
 
 
-module.exports = mongoose.model('Folder', folderSchema);
+module.exports = mongoose.model('Privacy', privacySchema);

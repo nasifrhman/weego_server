@@ -2,10 +2,11 @@ const { default: status } = require("http-status");
 const catchAsync = require('../../helpers/catchAsync')
 const response = require("../../helpers/response");
 const unlinkImage = require('../../helpers/unlinkImage')
-const { getUserById, getUsers, updateUser, getMonthlyUserRatio, getUserProfile, calculateCount, unbanUserService, banUserService, updateUserById, changeCurrentTrainningService, deleteAccountService, calculateCountUserService, calculateSubscriptionCount, getreferralCode } = require('./user.service');
+const { getUserById, getUsers, updateUser, getMonthlyUserRatio, getUserProfile, calculateCount, unbanUserService, banUserService, updateUserById, changeCurrentTrainningService, deleteAccountService, calculateCountUserService, calculateSubscriptionCount, getreferralCode, getDeletedUsers } = require('./user.service');
 const ApiError = require("../../helpers/ApiError");
 const bcrypt = require('bcryptjs');
 const { getTotalEarning } = require("../Transaction/transaction.service");
+const { updatePrivacyService, togglePrivacySetting, myPrivacyService } = require("../Privacy/privacy.service");
 
 
 
@@ -23,7 +24,10 @@ const deleteUserAccount = catchAsync(async (req, res) => {
   if (!password) throw new ApiError(status.BAD_REQUEST, 'password-required');
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) throw new ApiError(status.UNAUTHORIZED, 'password-not-match');
-  const data = await deleteAccountService(req.User._id);
+  req.body.user = req.User._id;
+  //Remove password before passing body
+  delete req.body.password;
+  const data = await deleteAccountService(req.body);
   return res.status(status.OK).json({
     status: 'OK',
     statusCode: status.OK,
@@ -37,11 +41,12 @@ const countController = catchAsync(async (req, res) => {
   const userCount = await calculateCountUserService();
   const totalEarning = await getTotalEarning();
   const subscription = await calculateSubscriptionCount()
-  return res.status(status.OK).json(response({statusCode: status.OK, message: 'count', status: "OK", data: {
-    userCount,
-    totalEarning,
-    subscription
-  }
+  return res.status(status.OK).json(response({
+    statusCode: status.OK, message: 'count', status: "OK", data: {
+      userCount,
+      totalEarning,
+      subscription
+    }
   }));
 })
 
@@ -58,18 +63,16 @@ const userDetailsByID = catchAsync(async (req, res) => {
 })
 
 
+const updatePrivacyController = catchAsync(async (req, res) => {
+  const userDetails = await togglePrivacySetting(req.User._id, req.body.field);
+  return res.status(status.OK).json(response({ statusCode: status.OK, message: req.t('privacy-policy-updated'), data: userDetails, status: "OK" }));
+})
+
+
 
 const updateProfile = catchAsync(async (req, res) => {
   const user = await getUserById(req.User._id);
-  if (!user) {
-    return res.status(status.NOT_FOUND).json(response({
-      status: 'Error',
-      statusCode: status.NOT_FOUND,
-      type: 'user',
-      message: req.t('user-not-exists')
-    }));
-  }
-
+  if (!user) throw new ApiError(status.NOT_FOUND, 'user-not-found');
   if (req.file) {
     const { filename } = req.file;
     if (filename && filename.length > 0) {
@@ -109,6 +112,32 @@ const allUsers = catchAsync(async (req, res) => {
     ];
   }
   const users = await getUsers(filters, options);
+  return res.status(status.OK).json(response({ statusCode: status.OK, message: req.t('users-list'), type: "user", data: users, status: 'OK' }));
+});
+
+
+const myPrivacyController = catchAsync(async (req, res) => {
+  const data = await myPrivacyService(req.User._id);
+  return res.status(status.OK).json(response({ statusCode: status.OK, data: data, status: "OK" , type:"user"}));
+});
+
+
+// Get all users
+const allDeletedAccount = catchAsync(async (req, res) => {
+  let filters = { isDeleted:true };
+  const options = {
+    page: Number(req.query.page) || 1,
+    limit: Number(req.query.limit) || 10
+  };
+
+  const search = req.query.search;
+  if (search && search !== 'null' && search !== '' && search !== undefined) {
+    const searchRegExp = new RegExp('.*' + search + '.*', 'i');
+    filters.$or = [
+      { fullName: { $regex: searchRegExp } }
+    ];
+  }
+  const users = await getDeletedUsers(filters, options);
   return res.status(status.OK).json(response({ statusCode: status.OK, message: req.t('users-list'), data: users, status: 'OK' }));
 });
 
@@ -157,8 +186,11 @@ module.exports = {
   allUsers,
   userRatio,
   Count,
+  updatePrivacyController,
+  allDeletedAccount,
   userDetailsByID,
   banUserController,
   completeProfileController,
-  seeOwnReferalCode
+  seeOwnReferalCode,
+  myPrivacyController
 };

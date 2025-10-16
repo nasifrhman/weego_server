@@ -1,5 +1,5 @@
 const express = require('express');
-const { userDetails, updateProfile, allUsers, userRatio, userDetailsByID, banUserController, completeProfileController, countController, deleteUserAccount,} = require('./user.controller');
+const { userDetails, updateProfile, allUsers, userRatio, userDetailsByID, banUserController, completeProfileController, countController, deleteUserAccount, allDeletedAccount, updatePrivacyController, myPrivacyController,} = require('./user.controller');
 const router = express.Router();
 
 
@@ -16,13 +16,16 @@ ensureUploadFolderExists(UPLOADS_FOLDER_USERS);
 
 router.get('/user-details', auth(['provider', 'contractor', 'admin']), userDetails);
 router.get('/count', auth(['admin']), countController);
-router.delete('/delete-account', auth(['provider', 'contractor', 'admin']), deleteUserAccount);
-router.get('/all',  auth(['admin']), allUsers);
+router.get('/all', auth(['admin']), allUsers);
+router.get('/all-deletedAccount', auth(['admin']), allDeletedAccount);
+router.get('/my-privacy', auth(['provider', 'contractor', 'admin']), myPrivacyController);
 router.get('/user-ratio',  auth(['admin']), userRatio);
-router.put('/update', uploadUsers.single('profileImage'), convertHeicToPng(UPLOADS_FOLDER_USERS), auth(['provider', 'contractor', 'admin']), parseData(), updateProfile);
+router.put('/delete-own-account', auth(['provider', 'contractor', 'admin']), deleteUserAccount);
+router.put('/update', uploadUsers.single('image'), convertHeicToPng(UPLOADS_FOLDER_USERS), auth(['provider', 'contractor', 'admin']), parseData(), updateProfile);
 router.put("/ban/:userId",  auth(['admin']), banUserController);
 router.put('/complete', auth(['provider', 'contractor', 'admin']), completeProfileController);
 router.get('/userbyId/:id', auth(['provider', 'contractor', 'admin']), userDetailsByID);
+router.patch('/toggle-privacy', auth(['provider', 'contractor', 'admin']), updatePrivacyController);
 
 
 
