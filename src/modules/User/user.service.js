@@ -165,22 +165,28 @@ const unbanUserService = async (id, data) => {
 
 
 
+// const updateUserById = async (id, data) => {
+//   const user = await User.findById(id);
+//   if (!user) throw new ApiError(404, 'User not found');
+//   if (data.language) {
+//     // if (!Array.isArray(data.language)) {
+//     //   data.language = [data.language];
+//     // }
+//     if (!user.language.includes(data.language)) {
+//       user.language.push(data.language);
+//     }
+//   }
+//   // Remove language from data so findByIdAndUpdate doesn't overwrite it
+//   const { language, ...otherData } = data;
+//   Object.assign(user, otherData);
+//   await user.save();
+//   return user;
+// };
+
+
+
 const updateUserById = async (id, data) => {
-  const user = await User.findById(id);
-  if (!user) throw new ApiError(404, 'User not found');
-  if (data.language) {
-    // if (!Array.isArray(data.language)) {
-    //   data.language = [data.language];
-    // }
-    if (!user.language.includes(data.language)) {
-      user.language.push(data.language);
-    }
-  }
-  // Remove language from data so findByIdAndUpdate doesn't overwrite it
-  const { language, ...otherData } = data;
-  Object.assign(user, otherData);
-  await user.save();
-  return user;
+  return await User.findByIdAndUpdate(id, data, {new: true});
 };
 
 

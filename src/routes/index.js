@@ -7,6 +7,8 @@ const feedbackRoutes = require('../modules/FeedBack/feedback.route');
 const fqRoutes = require('../modules/F&Q/fq.route')
 const transactionRoutes = require('../modules/Transaction/transaction.route')
 const notificationRoutes = require('../modules/Notification/notification.route')
+const categoryRoutes = require('../modules/Category/category.route')
+const serviceRoutes = require('../modules/Service/service.route')
 
 
 
@@ -18,6 +20,10 @@ const moduleRoutes = [
   {
     path: '/fandq',
     route: fqRoutes,
+  },
+  {
+    path: '/category',
+    route: categoryRoutes,
   },
   {
     path: '/users',
@@ -34,6 +40,10 @@ const moduleRoutes = [
   {
     path: '/feedback',
     route: feedbackRoutes
+  },
+  {
+    path: '/service',
+    route: serviceRoutes
   },
   {
     path: '/notifications',

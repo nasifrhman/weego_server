@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const serviceSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    image: {type : String, required : false},
     serviceName: { type: String, required: true },
     description: { type: String, required: false },
     priceMin: { type: Number, required: false, default: 0 },
@@ -9,8 +10,8 @@ const serviceSchema = new mongoose.Schema({
     haveTools: { type: Boolean, required: false },
     needTools: [{ type: String, required: false }],
     isDraft: { type: Boolean, default: true },
-    estimatedTimeMin: { type: String, required: false },
-    estimatedTimeMax: { type: String, required: false },//?
+    estimatedTimeMin: { type: Number, required: false },
+    estimatedTimeMax: { type: Number, required: false }
 },
     {
         timestamps: true

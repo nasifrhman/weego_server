@@ -8,7 +8,6 @@ const privacySchema = new Schema({
     showService: { type: Boolean, default: true },
     isActivePushNotification: { type: Boolean, default: true },
     availabilityOnHoliday: { type: Boolean, default: false },
-    currency: { type: String, default: 'USD' },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 

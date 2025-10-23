@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const categorySchema = new mongoose.Schema({
     image: {type: String, required: false},
     name : { type: String, required: true},
-    percentage: { type: Number, required: false, default: 0 },
+    percentage: { type: Number, default: 0 },
 },
 {
     timestamps: true
