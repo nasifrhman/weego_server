@@ -4,7 +4,6 @@
     "unauthorized": "No estás autorizado",
     "req-accepted": "solicitud aceptada",
     "request deleted": "solicitud eliminada",
-
     "bad-request": "Solicitud incorrecta",
     "blocked": "¡Has sido bloqueado! Por favor, contacta con el administrador",
     "conflict-feedback": "no puedes dejar una reseña de tu propio negocio",
@@ -13,9 +12,7 @@
     "password-required": "se requiere contraseña",
     "user-password-not-set": "contraseña de usuario no establecida",
     "password-not-match": "la contraseña no coincide",
-
     "privacy-policy-updated": "política de privacidad actualizada",
-
     "login-success": "inicio de sesión exitoso",
     "invalid-token": "token inválido",
     "invalid-password": "contraseña inválida",
@@ -39,15 +36,12 @@
     "password-reset-success": "tu contraseña ha sido restablecida con éxito",
     "account-switched": "cuenta cambiada exitosamente",
     "delete-account": "Cuenta eliminada exitosamente",
-
     "business-added": "nuevo negocio agregado",
     "business-deleted": "cuenta de negocio eliminada",
     "nearby-business": "negocios cercanos obtenidos con éxito",
     "all-business": "todos los negocios obtenidos",
-
     "community-added": "datos de la comunidad agregados con éxito",
     "community-list": "lista de comunidades obtenida",
-
     "deal-added": "nuevo trato agregado con éxito",
     "deal-edited": "trato actualizado con éxito",
     "deals-to-approve": "todos los tratos para aprobar",
@@ -61,37 +55,29 @@
     "deal-delete-req": "solicitud de eliminación de trato enviada",
     "deal-redeemed": "trato redimido",
     "deal-deleted": "trato eliminado con éxito",
-
     "favourite-added": "favorito agregado",
     "unfavourited": "eliminado de favoritos",
     "my-favourite": "mi lista de favoritos",
-
     "feedback-added": "comentario agregado con éxito",
     "feedbacks": "todos mis comentarios",
     "all-feedback": "comentarios obtenidos con éxito",
-
     "home-page-data": "datos de la página principal obtenidos",
-
     "menu-added": "nuevo menú agregado con éxito",
     "menus": "menús obtenidos",
     "menu-updated": "menú actualizado",
     "menu-deleted": "menú eliminado",
-
     "potentialDealer-added": "potencial distribuidor agregado",
     "potentialDeal-updated": "datos de potencial distribuidor actualizados",
     "potentialDeals": "todos los distribuidores potenciales obtenidos",
-
     "city-added": "nueva ciudad agregada",
     "city-updated": "ciudad actualizada",
     "cities": "todas las ciudades",
-
     "staticContent-added": "contenido estático agregado",
     "staticContents": "contenidos estáticos",
-
     "make-dealer": "este usuario también actuará como distribuidor",
-
     "unexpected-error": "Ocurrió un error inesperado",
-
+    "folder-added": "carpeta agregada",
+    "delete-folder": "carpeta eliminada",
     "role-assigned-title": "Se te ha asignado un nuevo rol: {{role}}",
     "role-assigned-message": "¡Felicidades! Se te ha asignado el rol de {{role}}.",
     "new-role-joined-title": "Se ha unido un nuevo {{role}}",

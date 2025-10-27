@@ -88,7 +88,7 @@ const deleteAccountService = async (data) => {
       await user.save();
     } else if (user.role.length === 0) {
       user.email = `${user.email}_deleted_${Date.now()}`;
-      user.userName = `${user.userName}_deleted_${Date.now()}`;
+      // user.userName = `${user.userName}_deleted_${Date.now()}`;
       user.isDeleted = true;
       user.isBan = true;
       await user.save();

@@ -11,7 +11,7 @@ const seedAdmin = async () => {
     if (!existingAdmin) {
       const newborn = await User.create({
         fullName: "Admin",
-        userName: adminEmail.split("@")[0],
+        // userName: adminEmail.split("@")[0],
         email: adminEmail,
         password: adminPassword,
         role: 'admin',

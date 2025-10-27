@@ -23,7 +23,7 @@ router.get('/user-ratio',  auth(['admin']), userRatio);
 router.put('/delete-own-account', auth(['provider', 'contractor', 'admin']), deleteUserAccount);
 router.put('/update', uploadUsers.single('image'), convertHeicToPng(UPLOADS_FOLDER_USERS), auth(['provider', 'contractor', 'admin']), parseData(), updateProfile);
 router.put("/ban/:userId",  auth(['admin']), banUserController);
-router.put('/complete', auth(['provider', 'contractor', 'admin']), completeProfileController);
+router.put('/complete', uploadUsers.single('image'), convertHeicToPng(UPLOADS_FOLDER_USERS), auth(['provider', 'contractor', 'admin']), parseData(), completeProfileController);
 router.get('/userbyId/:id', auth(['provider', 'contractor', 'admin']), userDetailsByID);
 router.patch('/toggle-privacy', auth(['provider', 'contractor', 'admin']), updatePrivacyController);
 

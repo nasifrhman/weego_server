@@ -15,13 +15,104 @@ const deleteServiceService = async (id) => {
 }
 
 const serviceDetailsService = async (id) => {
-    return await serviceModel.findById(id);
+    // return await serviceModel.findById(id).populate('category', 'name image').populate('user', 'fullName image');
+    return await serviceModel.aggregate([
+        {
+            $match: { _id: new mongoose.Types.ObjectId(String(id)) }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: "user",
+                foreignField: '_id',
+                as: 'userData'
+            }
+        },
+        {
+            $unwind: {
+                path: '$userData',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup:
+            {
+                from: 'categories',
+                localField: "category",
+                foreignField: '_id',
+                as: 'categoryData'
+            }
+        },
+        {
+            $unwind: {
+                path: '$categoryData',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $project: {
+                image: 1,
+                serviceName: 1,
+                description: 1,
+                priceMin: 1,
+                priceMax: 1,
+                haveTools: 1,
+                needTools: 1,
+                isDraft: 1,
+                estimatedTimeMin: 1,
+                estimatedTimeMax: 1,
+                userName: '$userData.fullName',
+                userImage: '$userData.image',
+                categoryName: '$categoryData.name',
+                categoryImage: '$categoryData.image',
+            }
+        }
+    ])
 }
+
+
+const serviceByCategoryService = async (id, options) => {
+    const { page, limit } = options;
+    const skip = (page - 1) * limit;
+
+    const [service, totalResults] = await Promise.all([
+        serviceModel.aggregate([
+            {
+                $match: { category: new mongoose.Types.ObjectId(String(id)) }
+            },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $project: {
+                    image: 1,
+                    serviceName: 1,
+                    priceMin: 1,
+                    priceMax: 1
+                }
+            }
+        ]),
+        serviceModel.countDocuments({ category: new mongoose.Types.ObjectId(String(id)) })
+    ]);
+
+    return {
+        service,
+        pagination: {
+            totalResults,
+            currentPage: page,
+            limit,
+            totalPage: Math.ceil(totalResults / limit)
+        }
+    };
+};
+
+
 
 
 const updateServiceService = async (id, data) => {
     return await serviceModel.findByIdAndUpdate(id, data, { new: true })
 }
+
+
 
 const getServiceService = async (filters, options) => {
     const { page, limit } = options;
@@ -117,7 +208,7 @@ const allServiceService = async (options) => {
             {
                 $limit: limit
             },
-               {
+            {
                 $lookup: {
                     from: 'users',
                     localField: 'user',
@@ -185,6 +276,7 @@ module.exports = {
     getAllService,
     getServiceService,
     deleteServiceService,
+    serviceByCategoryService,
     getServiceById,
     allServiceService
 }

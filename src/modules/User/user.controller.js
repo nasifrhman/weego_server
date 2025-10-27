@@ -167,6 +167,12 @@ const banUserController = catchAsync(async (req, res) => {
 
 const completeProfileController = catchAsync(async (req, res) => {
   req.body.isComplete = true;
+  if (req.file) {
+    const { filename } = req.file;
+    if (filename && filename.length > 0) {
+      req.body.image = `/uploads/users/${filename}`;
+    }
+  }
   const user = await updateUserById(req.User._id, req.body);
   return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'user', message: 'complete Profile', data: user }));
 })

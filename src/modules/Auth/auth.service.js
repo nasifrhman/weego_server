@@ -42,7 +42,7 @@ const addUser = async (userBody) => {
     return await existingUser.save();
   } else {
     const user = new User(userBody);
-    user.userName = userBody.fullName.split("*")[0];
+    // user.userName = userBody.fullName.split("")[0];
     user.currentRole = userBody.role;
     const roleTranslations = {
       admin: { en: "Admin", de: "Administrator" },

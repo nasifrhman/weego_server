@@ -97,6 +97,9 @@
 
     "unexpected-error" : "An unexpected error occurred",
 
+    "folder-added" : "folder added",
+    "delete-folder" : "folder deleted",
+
     
     "role-assigned-title": "You've been assigned a new role: {{role}}",
     "role-assigned-message": "Congratulations! You have been assigned the role of {{role}}.",
