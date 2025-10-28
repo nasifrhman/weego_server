@@ -19,8 +19,7 @@ const deleteFolder = catchAsync(async (req, res) => {
 
 
 const myFolder = catchAsync(async (req, res) => {
-  const filter = { user: new mongoose.Types.ObjectId(String(req.User._id)) };
-  const myFolder = await myFolderService(filter);
+  const myFolder = await myFolderService(req.User._id);
   return res.status(status.OK).json(
     response({
       status: "Success",

@@ -9,7 +9,10 @@ const transactionRoutes = require('../modules/Transaction/transaction.route')
 const notificationRoutes = require('../modules/Notification/notification.route')
 const categoryRoutes = require('../modules/Category/category.route')
 const serviceRoutes = require('../modules/Service/service.route')
+const favouriteRoutes = require('../modules/Favourite/favourite.route')
 const folderRoutes = require('../modules/Folder/folder.route.js')
+const reportRoutes = require('../modules/Report/report.route')
+const addressRoutes = require('../modules/Address/address.route')
 
 
 
@@ -47,8 +50,20 @@ const moduleRoutes = [
     route: serviceRoutes
   },
   {
+    path: '/address',
+    route: addressRoutes
+  },
+  {
+    path: '/report',
+    route: reportRoutes
+  },
+  {
     path: '/folder',
     route: folderRoutes
+  },
+  {
+    path: '/favourite',
+    route: favouriteRoutes
   },
   {
     path: '/notifications',
