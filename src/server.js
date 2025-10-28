@@ -23,7 +23,7 @@ const io = socket(socketServer, {
 let server = null;
 const port = process.env.BACKEND_PORT || 3001;
 const serverIP = process.env.API_SERVER_IP || "localhost";
-const appName = process.env.APPNAME || "training_plus";
+const appName = process.env.APPNAME || "weego";
 
 async function myServer() {
   try {
