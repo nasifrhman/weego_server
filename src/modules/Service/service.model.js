@@ -9,6 +9,7 @@ const serviceSchema = new mongoose.Schema({
     priceMax: { type: Number, required: false, default: 0 },
     haveTools: { type: Boolean, required: false },
     needTools: [{ type: String, required: false }],
+    sell : {type: Number, default: 0},
     offer : {type: Number, default: 0},
     rating : {type: Number, default: 0},
     isDraft: { type: Boolean, default: true },

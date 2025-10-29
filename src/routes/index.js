@@ -13,7 +13,7 @@ const favouriteRoutes = require('../modules/Favourite/favourite.route')
 const folderRoutes = require('../modules/Folder/folder.route.js')
 const reportRoutes = require('../modules/Report/report.route')
 const addressRoutes = require('../modules/Address/address.route')
-
+const bookingRoutes = require('../modules/serviceManagement/serviceManagement.route.js')
 
 
 const moduleRoutes = [
@@ -48,6 +48,10 @@ const moduleRoutes = [
   {
     path: '/service',
     route: serviceRoutes
+  },
+  {
+    path : '/booking',
+    route: bookingRoutes
   },
   {
     path: '/address',

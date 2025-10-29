@@ -1,20 +1,7 @@
-const { admiNotificationCount } = require("../../helpers/notificationCount");
-const { adminNotificationHandler } = require("../../socket/features/socketNotification");
-const { addNotificationService } = require("../Notification/notification.service");
 const Feedback = require("./feedback.model");
 
 
 const addFeedback = async (data) => {
-  await addNotificationService({
-    forAdmin: true,
-    message: `You got a new feedback!`
-  });
-  let count = await admiNotificationCount();
-  await adminNotificationHandler({
-    title: `You got a new feedback!`,
-    // target: 'admin',
-    unreadCount : count
-  })
   return Feedback.create(data)
 }
 

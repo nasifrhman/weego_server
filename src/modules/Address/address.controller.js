@@ -18,7 +18,7 @@ const deleteAddressController = catchAsync(async (req, res) => {
 
 
 const updateAddressController = catchAsync(async (req, res) => {
-    const result = await updateAddressService(req.params.id);
+    const result = await updateAddressService(req.params.id, req.body);
     return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'address', message: 'address-edited', data: result }))
 })
 

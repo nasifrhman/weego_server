@@ -12,7 +12,6 @@ const deleteAddressService = async (id) => {
 
 
 const updateAddressService = async (id, data) => {
-    console.log(data);
     return await addressModel.findByIdAndUpdate(id, data, { new: true });
 }
 

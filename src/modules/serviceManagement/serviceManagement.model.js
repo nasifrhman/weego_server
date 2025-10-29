@@ -9,14 +9,14 @@ const serviceManagementSchema = new Schema({
     cancelledBy: { type: Schema.Types.ObjectId, ref: 'User' },
     cancelationReason: { type: String, required: false },
     description : { type: String, required: false },
-    image : { type: String, required: false },
+    image : [{ type: String, required: false }],
     date : { type: Date, default: Date.now },
-    serviceAddress: { type: String, required: false },
+    serviceAddress: { type: Schema.Types.ObjectId, ref: 'Address' },
     instructions : { type: String, required: false },
     // contact1 : { type: String, required: false },
     // contact2 : { type: String, required: false },
-    status: { type: String, enum: ['pending', 'in_progress', 'completed', 'cancelled'], default: 'pending' },
-
+    status: { type: String, enum: ['pending', 'inprogress', 'completed', 'cancelled'], default: 'pending' },
+    paymentStatus: { type: String, enum: ['pending', 'paid', 'unpaid', 'refunded'], default: 'pending' },
 });
 
 module.exports = mongoose.model('ServiceManagement', serviceManagementSchema); 

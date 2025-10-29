@@ -5,7 +5,12 @@ const { default: status } = require("http-status");
 
 
 const addFeedbackController = catchAsync(async (req, res) => {
-    req.body.user = req.User._id;
+    req.body.sender = req.User._id;
+    if(req.files?.image && req.files.image.length > 0){
+        req.body.image = req.files.image.map(
+            (file) => `/uploads/feedback/${file.filename}`
+        );
+    }
     const feedback = await addFeedback(req.body);
     return res.status(status.CREATED).json(response({ status: "success", statusCode: status.CREATED, type: "feedback", message: req.t("feedback-added"), data: feedback }));
 });
@@ -20,6 +25,7 @@ const addFeedbackController = catchAsync(async (req, res) => {
 //     const feedback = await getFeedbackService(options);
 //     return res.status(status.OK).json(response({ status: "success", statusCode: status.OK, type: "feedback", message: req.t("feedbacks"), data: feedback }));
 // });
+
 
 const getFeedbackController = catchAsync(async (req, res) => {
   const options = {

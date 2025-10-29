@@ -15,7 +15,6 @@ const deleteServiceService = async (id) => {
 }
 
 const serviceDetailsService = async (id) => {
-    // return await serviceModel.findById(id).populate('category', 'name image').populate('user', 'fullName image');
     return await serviceModel.aggregate([
         {
             $match: { _id: new mongoose.Types.ObjectId(String(id)) }
@@ -61,8 +60,9 @@ const serviceDetailsService = async (id) => {
                 isDraft: 1,
                 estimatedTimeMin: 1,
                 estimatedTimeMax: 1,
-                userName: '$userData.fullName',
-                userImage: '$userData.image',
+                providerName: '$userData.fullName',
+                providerId: '$userData._id',
+                providerImage: '$userData.image',
                 categoryName: '$categoryData.name',
                 categoryImage: '$categoryData.image',
             }
@@ -129,8 +129,6 @@ const getServiceService = async (filters, options) => {
         }
     };
 }
-
-
 
 
 
@@ -252,6 +250,7 @@ const allServiceService = async (options) => {
                     categoryName: '$categoryInfo.name',
                     categoryImage: '$categoryInfo.image',
                     providerName: '$userInfo.fullName',
+                    providerId: '$userInfo._id',
                     providerImage: '$userInfo.image',
                 }
             }
