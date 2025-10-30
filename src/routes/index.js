@@ -14,6 +14,7 @@ const folderRoutes = require('../modules/Folder/folder.route.js')
 const reportRoutes = require('../modules/Report/report.route')
 const addressRoutes = require('../modules/Address/address.route')
 const bookingRoutes = require('../modules/serviceManagement/serviceManagement.route.js')
+const serviceAnnexRoutes = require('../modules/ServiceAnnex/serviceAnnex.route')
 
 
 const moduleRoutes = [
@@ -44,6 +45,10 @@ const moduleRoutes = [
   {
     path: '/feedback',
     route: feedbackRoutes
+  },
+  {
+    path: '/service-annex',
+    route: serviceAnnexRoutes
   },
   {
     path: '/service',

@@ -8,6 +8,7 @@ const folderSchema = new Schema({
     exterior: { type: String, required: true },
     interior: { type: String, required: false },
     zipCode: { type: String, required: true },
+    phoneNumber: { type: String, required: false },
     instructions: { type: String, required: false },
     latitude: { type: String, required: true },
     longitude: { type: String, required: true },
