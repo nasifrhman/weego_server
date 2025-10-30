@@ -15,4 +15,5 @@ const getAllStaticContent = catchAsync(async (req, res) => {
   return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'staticContent', message: req.t('staticContents'), data: staticContents }));
 })
 
+
 module.exports = { upgradeStaticContent, getAllStaticContent }

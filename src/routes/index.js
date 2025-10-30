@@ -15,6 +15,8 @@ const reportRoutes = require('../modules/Report/report.route')
 const addressRoutes = require('../modules/Address/address.route')
 const bookingRoutes = require('../modules/serviceManagement/serviceManagement.route.js')
 const serviceAnnexRoutes = require('../modules/ServiceAnnex/serviceAnnex.route')
+const invoiceRoutes = require('../modules/Invoice/invoice.route')
+const engagementRoutes = require('../modules/UserEngagement/userEngagement.route')
 
 
 const moduleRoutes = [
@@ -27,12 +29,20 @@ const moduleRoutes = [
     route: fqRoutes,
   },
   {
+    path: '/engagement',
+    route: engagementRoutes,
+  },
+  {
     path: '/category',
     route: categoryRoutes,
   },
   {
     path: '/users',
     route: userRoutes,
+  },
+  {
+    path: '/invoice',
+    route: invoiceRoutes,
   },
   {
     path: '/transaction',

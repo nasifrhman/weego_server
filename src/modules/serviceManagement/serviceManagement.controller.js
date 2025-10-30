@@ -5,7 +5,7 @@ const { bookingService } = require("./serviceManagement.service");
 
 
 const bookingController = catchAsync(async (req, res) => {
-    req.body.contructor = req.User._id;
+    req.body.contractor = req.User._id;
     if(req.files?.image && req.files.image.length > 0){
         req.body.image = req.files.image.map(
             (file) => `/uploads/booking/${file.filename}`

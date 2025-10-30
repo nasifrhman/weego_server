@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const serviceManagementSchema = new Schema({
-    contructor: { type: Schema.Types.ObjectId, ref: 'User' },
+    contractor: { type: Schema.Types.ObjectId, ref: 'User' },
     provider: { type: Schema.Types.ObjectId, ref: 'User' },
     service: { type: Schema.Types.ObjectId, ref: 'Service' },
     price: { type: Number, default: 0 },

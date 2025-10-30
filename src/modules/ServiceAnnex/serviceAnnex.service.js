@@ -10,7 +10,7 @@ const editRequestService = async (id, data) => {
 }
 
 
-const requestContructorEndService = async (filter) => {
+const requestcontractorEndService = async (filter) => {
     console.log(filter)
     return await serviceAnnexModel.aggregate([
         { $match: filter },
@@ -50,4 +50,4 @@ const requestContructorEndService = async (filter) => {
 };
 
 
-module.exports = { newRequestService, requestContructorEndService, editRequestService };
+module.exports = { newRequestService, requestcontractorEndService, editRequestService };
