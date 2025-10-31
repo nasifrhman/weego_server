@@ -1,7 +1,7 @@
 const { status } = require("http-status");
 const response = require("../../helpers/response");
 const catchAsync = require("../../helpers/catchAsync");
-const { addUserEngagementService, getContractorProviderData, engagementHistory, frequentUser, frequentContractors, frequentProviders } = require("./userEngagement.service");
+const { addUserEngagementService, engagementHistory, frequentContractors, frequentProviders } = require("./userEngagement.service");
 const { default: mongoose } = require("mongoose");
 
 
@@ -10,16 +10,30 @@ const addUserEngagementController = catchAsync(async (req, res) => {
     return res.status(status.OK).json(response({ status: 'success', statusCode: status.CREATED, type: "UserEngagement", message: "UserEngagement added successfully", data: result, }));
 })
 
-
 const contractorEndHistory = catchAsync(async (req, res) => {
-    const result = await engagementHistory({ contractor: new mongoose.Types.ObjectId(String(req.User._id)) });
-    return res.status(status.OK).json(response({ status: 'success', statusCode: status.OK, type: "UserEngagement", message: "UserEngagement data fetched successfully", data: result, }));
-})
+  const result = await engagementHistory({
+    contractor: new mongoose.Types.ObjectId(String(req.User._id)),
+  });
+
+  return res.status(status.OK).json(
+    response({
+      status: "success",
+      statusCode: status.OK,
+      type: "UserEngagement",
+      message: "UserEngagement data fetched successfully",
+      data: result,
+    })
+  );
+});
 
 
 
 const providerEndHistory = catchAsync(async (req, res) => {
-    const result = await engagementHistory({ provider: new mongoose.Types.ObjectId(String(req.User._id)) });
+    const options = {
+        page: Number(req.query.page || 1),
+        limit : Number(req.query.limit || 10)
+    }
+    const result = await engagementHistory({ provider: new mongoose.Types.ObjectId(String(req.User._id)) }, options);
     return res.status(status.OK).json(response({ status: 'success', statusCode: status.OK, type: "UserEngagement", message: "UserEngagement data fetched successfully", data: result, }));
 })
 

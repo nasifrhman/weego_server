@@ -14,7 +14,7 @@ const { getUserById } = require("../User/user.service");
 
 const localAuth = catchAsync(async (req, res) => {
   const { email, password, role } = req.body;
-  console.log({ role });
+  // console.log({ role });
   const user = await login(role , email, password);
   user.isLoginToken = true;
   const token = await tokenGenerator(user);
