@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const UserEngagement = require("./userEngagement.model");
 
 const addUserEngagementService = async (data) => {
@@ -5,11 +6,29 @@ const addUserEngagementService = async (data) => {
 }
 
 
-const engagementHistory = async (filter, options = {}) => {
+const engagementHistory = async (userId, role, options = {}) => {
+    console.log({ role });
   const { page = 1, limit = 10 } = options;
   const skip = (page - 1) * limit;
 
-  const [providerHistory, totalResults] = await Promise.all([
+  // Determine filter and the field to populate
+  let filter = {};
+  let populateField = "";
+  let populateAs = "";
+
+  if (role === "contractor") {
+    filter.contractor = new mongoose.Types.ObjectId(String(userId));
+    populateField = "provider";
+    populateAs = "counterpartInfo";
+  } else if (role === "provider") {
+    filter.provider = new mongoose.Types.ObjectId(String(userId));
+    populateField = "contractor";
+    populateAs = "counterpartInfo";
+  } else {
+    throw new Error("Invalid role");
+  }
+
+  const [history, totalResults] = await Promise.all([
     UserEngagement.aggregate([
       { $match: filter },
       { $sort: { createdAt: -1 } },
@@ -18,12 +37,12 @@ const engagementHistory = async (filter, options = {}) => {
       {
         $lookup: {
           from: "users",
-          localField: "provider",
+          localField: populateField,
           foreignField: "_id",
-          as: "providerInfo",
+          as: populateAs,
         },
       },
-      { $unwind: { path: "$providerInfo", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: `$${populateAs}`, preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           from: "services",
@@ -36,9 +55,9 @@ const engagementHistory = async (filter, options = {}) => {
       {
         $project: {
           _id: 0,
-          providerName: "$providerInfo.fullName",
-          providerId: "$providerInfo._id",
-          providerImage: "$providerInfo.image",
+          counterpartName: `$${populateAs}.fullName`,
+          counterpartId: `$${populateAs}._id`,
+          counterpartImage: `$${populateAs}.image`,
           serviceName: "$serviceInfo.serviceName",
           serviceId: "$serviceInfo._id",
           price: 1,
@@ -50,7 +69,7 @@ const engagementHistory = async (filter, options = {}) => {
   ]);
 
   return {
-    providerHistory,
+    history,
     pagination: {
       totalResults,
       limit,
@@ -59,7 +78,6 @@ const engagementHistory = async (filter, options = {}) => {
     },
   };
 };
-
 
 
 
@@ -98,119 +116,64 @@ const frequentProviders = async (filter) => {
 
 
 
-const frequentContractors = async (filter) => {
-    return await UserEngagement.aggregate([
-        { $match: filter },
-        {
-            $group: {
-                _id: { contractor: "$contractor", service: "$service" },
-                totalEngagements: { $sum: 1 },
-            },
-        },
-        { $sort: { totalEngagements: -1 } },
-        { $limit: 10 },
-        {
-            $lookup: {
-                from: "users",
-                localField: "_id.contractor",
-                foreignField: "_id",
-                as: "contractorInfo",
-            },
-        },
-        { $unwind: "$contractorInfo" },
-        {
-            $lookup: {
-                from: "services",
-                localField: "_id.service",
-                foreignField: "_id",
-                as: "serviceInfo",
-            },
-        },
-        { $unwind: "$serviceInfo" },
-        {
-            $project: {
-                _id: 0,
-                contractorName: "$contractorInfo.fullName",
-                contractorImage: "$contractorInfo.image",
-                serviceId: "$_id.service",
-                totalEngagements: 1,
-            },
-        },
-    ]);
+const frequentEngagements = async (userId, role) => {
+  let filter = {};
+  let groupField = "";
+  console.log({ role, userId });
+
+  if (role === "provider") {
+    console.log("Fetching frequent contractors for provider:", userId);
+    // Show frequent contractors for this provider
+    filter.provider = new mongoose.Types.ObjectId(String(userId));
+    groupField = "$contractor";
+  } else if (role === "contractor") {
+    // Show frequent providers for this contractor
+    filter.contractor = new mongoose.Types.ObjectId(String(userId));
+    groupField = "$provider";
+  } else {
+    throw new Error("Invalid role");
+  }
+
+  return await UserEngagement.aggregate([
+    { $match: filter },
+    {
+      $group: {
+        _id: { user: groupField, service: "$service" },
+        totalEngagements: { $sum: 1 },
+      },
+    },
+    { $sort: { totalEngagements: -1 } },
+    { $limit: 10 },
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id.user",
+        foreignField: "_id",
+        as: "counterpartInfo",
+      },
+    },
+    { $unwind: "$counterpartInfo" },
+    {
+      $lookup: {
+        from: "services",
+        localField: "_id.service",
+        foreignField: "_id",
+        as: "serviceInfo",
+      },
+    },
+    { $unwind: "$serviceInfo" },
+    {
+      $project: {
+        _id: 0,
+        counterpartName: "$counterpartInfo.fullName",
+        counterpartImage: "$counterpartInfo.image",
+        serviceId: "$_id.service",
+        totalEngagements: 1,
+      },
+    },
+  ]);
 };
 
 
 
-// const getContractorProviderData = async (contractorId) => {
-
-
-//     // === 1. Provider History ===
-//     const providerHistory = await UserEngagement.aggregate([
-//         { $match: { contractor: new mongoose.Types.ObjectId(String(contractorId)) } },
-//         {
-//             $lookup: {
-//                 from: "users",
-//                 localField: "provider",
-//                 foreignField: "_id",
-//                 as: "providerInfo",
-//             },
-//         },
-//         { $unwind: "$providerInfo" },
-//         {
-//             $lookup: {
-//                 from: "services",
-//                 localField: "service",
-//                 foreignField: "_id",
-//                 as: "serviceInfo",
-//             },
-//         },
-//         { $unwind: "$serviceInfo" },
-//         {
-//             $project: {
-//                 _id: 0,
-//                 providerName: "$providerInfo.fullName",
-//                 providerImage: "$providerInfo.image",
-//                 serviceName: "$serviceInfo.serviceName",
-//                 price: 1,
-//                 date: "$createdAt",
-//             },
-//         },
-//         { $sort: { date: -1 } },
-//     ]);
-
-//     // === 2. Frequent Providers ===
-//     const frequentProviders = await userEngagementModel.aggregate([
-//         { $match: { contractor: new mongoose.Types.ObjectId(String(contractorId)) } },
-//         {
-//             $group: {
-//                 _id: { provider: "$provider", service: "$service" },
-//                 totalEngagements: { $sum: 1 },
-//             },
-//         },
-//         { $sort: { totalEngagements: -1 } },
-//         { $limit: 5 },
-//         {
-//             $lookup: {
-//                 from: "users",
-//                 localField: "_id.provider",
-//                 foreignField: "_id",
-//                 as: "providerInfo",
-//             },
-//         },
-//         { $unwind: "$providerInfo" },
-//         {
-//             $project: {
-//                 _id: 0,
-//                 providerName: "$providerInfo.fullName",
-//                 providerImage: "$providerInfo.image",
-//                 serviceId: "$_id.service",
-//             },
-//         },
-//     ]);
-
-//     return { providerHistory, frequentProviders };
-// };
-
-
-
-module.exports = { addUserEngagementService, frequentContractors, frequentProviders, engagementHistory }
+module.exports = { addUserEngagementService, frequentEngagements, frequentProviders, engagementHistory }
