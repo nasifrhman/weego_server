@@ -83,6 +83,7 @@ const addUser = async (userBody) => {
 
 
 const login = async (role , email, inputPassword) => {
+  console.log({ role});
   const user = await User.findOne({ email }).select('+password');
   if (!user) throw new ApiError(status.NOT_FOUND, 'invalid-email');
   if (user && user.isBan === true) throw new ApiError(status.NOT_FOUND, 'blocked');
@@ -91,6 +92,7 @@ const login = async (role , email, inputPassword) => {
     throw new ApiError(status.UNAUTHORIZED, 'invalid-role');
   }
   if (!isMatch) throw new ApiError(status.UNAUTHORIZED, 'invalid-password');
+  user.currentRole = role;
   return user;
 };
 

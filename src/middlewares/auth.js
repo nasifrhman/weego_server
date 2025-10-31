@@ -6,6 +6,7 @@ const ApiError = require('../helpers/ApiError');
 
 
 const auth = (userRoles) => {
+  console.log(userRoles);
   return catchAsync(async (req, res, next) => {
     const { authorization } = req.headers;
     let token, decodedData;
