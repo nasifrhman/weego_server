@@ -46,8 +46,8 @@ const myFolderService = async (userId) => {
                     {
                         $project: {
                             serviceName: 1,
-                            priceMin: 1,
-                            priceMax: 1,
+                            // priceMin: 1,
+                            price: 1,
                             rating: 1,
                             image: 1,
                             rating:1,

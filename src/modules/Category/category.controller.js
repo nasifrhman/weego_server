@@ -5,7 +5,7 @@ const { deleteCategoryService, allCategoryService, addCategoryService, updateCat
 
 
 const addCategoryController = catchAsync(async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     if (req.file) req.body.image = `/uploads/category/${req.file.filename}`;
     console.log(req.body)
     const result = await addCategoryService(req.body);

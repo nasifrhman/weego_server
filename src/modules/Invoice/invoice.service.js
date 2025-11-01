@@ -2,7 +2,7 @@ const invoiceModel = require("./invoice.model");
 
 
 const addInvoiceService = async (data) => {
-    return await invoiceModel.insertMany(data);
+    return await invoiceModel.create(data);
 }
 
 const editInvoiceService = async(id, data)=> {

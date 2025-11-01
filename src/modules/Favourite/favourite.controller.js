@@ -5,6 +5,7 @@ const response = require("../../helpers/response");
 
 
 const addFavourite = catchAsync(async (req, res) => {
+  req.body.user = req.User._id;
   const result = await addFavouriteService(req.body)
   return res.status(status.CREATED).json(response({ status: 'Success', statusCode: status.CREATED, type: 'favourite', message: 'favourite-added', data: result }));
 });

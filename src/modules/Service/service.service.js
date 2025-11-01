@@ -53,8 +53,8 @@ const serviceDetailsService = async (id) => {
                 image: 1,
                 serviceName: 1,
                 description: 1,
-                priceMin: 1,
-                priceMax: 1,
+                // priceMin: 1,
+                price: 1,
                 haveTools: 1,
                 needTools: 1,
                 isDraft: 1,
@@ -86,8 +86,8 @@ const serviceByCategoryService = async (id, options) => {
                 $project: {
                     image: 1,
                     serviceName: 1,
-                    priceMin: 1,
-                    priceMax: 1
+                    // priceMin: 1,
+                    price: 1
                 }
             }
         ]),
@@ -104,8 +104,6 @@ const serviceByCategoryService = async (id, options) => {
         }
     };
 };
-
-
 
 
 const updateServiceService = async (id, data) => {
@@ -131,6 +129,56 @@ const getServiceService = async (filters, options) => {
 }
 
 
+const getServicesWithDiscounts = async (options) => {
+    const { page, limit } = options;
+    const skip = (page - 1) * limit;
+    const [services, totalResults] = await Promise.all([
+        await serviceModel.aggregate([
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'discounts',
+                    localField: '_id',
+                    foreignField: 'service',
+                    as: 'discountInfo'
+                }
+            },
+            {
+                $unwind: '$discountInfo'
+            },
+            {
+                $project: {
+                    _id: 0,
+                    serviceId: '$_id',
+                    serviceName: 1,
+                    serviceImage: { $arrayElemAt: ['$image', 0] },
+                    price: 1,
+                    rating: 1,
+                    discount: '$discountInfo.discount',
+                    discountType: '$discountInfo.discountType',
+                    finalPrice: {
+                        $cond: [
+                            { $eq: ['$discountInfo.discountType', 'percentage'] },
+                            { $subtract: ['$price', { $multiply: ['$price', { $divide: ['$discountInfo.discount', 100] }] }] },
+                            { $subtract: ['$price', '$discountInfo.discount'] }
+                        ]
+                    }
+                }
+            }
+        ]),
+        await serviceModel.countDocuments()
+    ])
+
+    return {
+        services, pagination: {
+            totalResults,
+            totalPages: Math.ceil(totalResults / limit),
+            currentPage: page,
+            limit
+        }
+    };
+};
 
 
 const getAllService = async (userId, options) => {
@@ -242,8 +290,8 @@ const allServiceService = async (options) => {
                     isDraft: 1,
                     needTools: 1,
                     haveTools: 1,
-                    priceMax: 1,
-                    priceMin: 1,
+                    price: 1,
+                    // priceMin: 1,
                     description: 1,
                     serviceName: 1,
                     image: 1,
@@ -268,14 +316,89 @@ const allServiceService = async (options) => {
 }
 
 
+const allForUserService = async (options) => {
+    const { page, limit } = options;
+    const skip = (page - 1) * limit;
+    const [result, totalResults] = await Promise.all([
+        serviceModel.aggregate([
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit
+            },
+            {
+                $project: {
+                    serviceName: 1,
+                    serviceId: '$_id',
+                    image: { $arrayElemAt: ['$image', 0] },
+                    price:1,
+                    rating:1
+                }
+            }
+        ]),
+        serviceModel.countDocuments()
+    ])
+    return {
+        result, pagination: {
+            totalResults,
+            totalPage: Math.ceil(totalResults / limit),
+            currentPage: page,
+            limit
+        }
+    }
+}
+
+
+const allRecentService = async (options) => {
+    const { page, limit } = options;
+    const skip = (page - 1) * limit;
+    const [result, totalResults] = await Promise.all([
+        serviceModel.aggregate([
+            {
+                $sort: { createdAt: -1 }
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit
+            },
+            {
+                $project: {
+                    _id : 0,
+                    serviceName: 1,
+                    serviceId: '$_id',
+                    image: { $arrayElemAt: ['$image', 0] },
+                    price:1,
+                    rating:1
+                }
+            }
+        ]),
+        serviceModel.countDocuments()
+    ])
+    return {
+        result, pagination: {
+            totalResults,
+            totalPage: Math.ceil(totalResults / limit),
+            currentPage: page,
+            limit
+        }
+    }
+}
+
+
 module.exports = {
     addServiceService,
+    allForUserService,
     updateServiceService,
     serviceDetailsService,
     getAllService,
+    allRecentService,
     getServiceService,
     deleteServiceService,
     serviceByCategoryService,
     getServiceById,
-    allServiceService
+    allServiceService,
+    getServicesWithDiscounts
 }

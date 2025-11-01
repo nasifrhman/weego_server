@@ -1,7 +1,9 @@
 const response = require("../../helpers/response");
 const catchAsync = require('../../helpers/catchAsync');
 const { status } = require("http-status");
-const { addServiceService, updateServiceService, deleteServiceService, serviceDetailsService, allServiceService, serviceByCategoryService } = require("./service.service");
+const { addServiceService, updateServiceService, deleteServiceService, serviceDetailsService, allServiceService, serviceByCategoryService, getServicesWithDiscounts, allForUserService, allRecentService } = require("./service.service");
+const { allSavedService } = require("../Favourite/favourite.service");
+const { default: mongoose } = require("mongoose");
 
 
 
@@ -67,14 +69,63 @@ const getAllServiceController = catchAsync(async (req, res) => {
 })
 
 
+const getAllForUserServiceController = catchAsync(async (req, res) => {
+    const options = {
+        page: Number(req.query.page || 1),
+        limit: Number(req.query.limit || 10)
+    }
+    const result = await allForUserService(options);
+    return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'Service', message: 'Service fetched', data: result }));
+})
+
+
+const getAllRecentServiceController = catchAsync(async (req, res) => {
+    const options = {
+        page: Number(req.query.page || 1),
+        limit: Number(req.query.limit || 10)
+    }
+    const result = await allRecentService(options);
+    return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'Service', message: 'Recent Service fetched', data: result }));
+})
+
+
+
+const getAllSavedServiceController = catchAsync(async (req, res) => {
+    const options = {
+        page: Number(req.query.page || 1),
+        limit: Number(req.query.limit || 10)
+    }
+    let filter = {
+        user : new mongoose.Types.ObjectId(String(req.User._id)),
+    }
+    const result = await allSavedService(filter,options);
+    return res.status(status.OK).json(response({ status: 'Success', statusCode: status.OK, type: 'Service', message: 'Saved Service fetched', data: result }));
+})
+
+
+
+const fetchServicesWithDiscount = catchAsync(async (req, res) => {
+    const options = {
+        page: Number(req.query.page || 1),
+        limit: Number(req.query.limit || 10)
+    }
+    const services = await getServicesWithDiscounts(options);
+    return res.status(status.OK).json(response({ status: 'success', statusCode: status.OK, type: "Service", message: "Services with discounts fetched successfully", data: services, }));
+  
+})  
+
 
 
 module.exports = {
     getAllServiceController,
+    getAllForUserServiceController,
     addServiceController,
     editServiceController,
     serviceByCategoryController,
     deleteServiceController,
     aServiceDetails,
-    getAllServiceUserEndController
+    getAllSavedServiceController,
+    getAllRecentServiceController,
+    getAllServiceUserEndController,
+    fetchServicesWithDiscount
 }

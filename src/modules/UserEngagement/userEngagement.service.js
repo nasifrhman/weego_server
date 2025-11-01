@@ -2,7 +2,7 @@ const { default: mongoose } = require("mongoose");
 const UserEngagement = require("./userEngagement.model");
 
 const addUserEngagementService = async (data) => {
-    return await UserEngagement.insertMany(data);
+    return await UserEngagement.create(data);
 }
 
 

@@ -16,6 +16,7 @@ const addressRoutes = require('../modules/Address/address.route')
 const bookingRoutes = require('../modules/serviceManagement/serviceManagement.route.js')
 const serviceAnnexRoutes = require('../modules/ServiceAnnex/serviceAnnex.route')
 const invoiceRoutes = require('../modules/Invoice/invoice.route')
+const discountRoutes = require('../modules/Discount/discount.route')
 const engagementRoutes = require('../modules/UserEngagement/userEngagement.route')
 
 
@@ -43,6 +44,10 @@ const moduleRoutes = [
   {
     path: '/invoice',
     route: invoiceRoutes,
+  },
+  {
+    path: '/discount',
+    route: discountRoutes,
   },
   {
     path: '/transaction',
